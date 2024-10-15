@@ -10,6 +10,8 @@ public class follow {
 	
 	static int baseSpeed = 250;
 	static int kp = 180; // reg constant
+	static int ki = 0; // reg constant
+	static int kd = 200; // reg constant
 	
 	static float colorMid;
 	static int colorDiff;
@@ -39,7 +41,7 @@ public class follow {
 		 colorDiff = white - black;
 	}
 	
-	public static float getColorError() {
+	public static float getError() {
 //		-1 to 1
 		int lightValue = ls.getNormalizedLightValue();
 		if (lightValue > white) {
@@ -57,13 +59,29 @@ public class follow {
 		System.out.println(str);
 	}
 	
+	static float i;
+	static float previousErr;
 	public static void regulateSpeed() {
-		float turn = kp * getColorError();
+		float error = getError();
+		
+		float p = error;
+		i += error;
+		float d = error - previousErr;
+		previousErr = error;
+		
+		
+		float correction = p * kp + i * ki + d*kd;
+		
 //		System.out.println(getColorError());
 		 
 		 
-		 Motor.A.setSpeed(baseSpeed + turn);
-		 Motor.B.setSpeed(baseSpeed - turn);
+		 Motor.A.setSpeed(baseSpeed + correction);
+		 Motor.B.setSpeed(baseSpeed - correction);
+		 
+		 
+		 
+		 
+		 
 	}
 	
 	 public static void main (String[] args) 
@@ -73,6 +91,7 @@ public class follow {
 		 Motor.B.backward();
 		 
 		 while(!Button.ENTER.isDown()){			 
+//		 	MAIN LOOP
 			 regulateSpeed();
 		 }
 		 Motor.A.stop();
