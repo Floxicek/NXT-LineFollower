@@ -8,10 +8,10 @@ public class follow {
 	static int black;
 	static LightSensor ls = new LightSensor(SensorPort.S4);
 	
-	static int baseSpeed = 250;
-	static int kp = 180; // reg constant
+	static int baseSpeed = 300;
+	static int kp = 215; // reg constant
 	static int ki = 0; // reg constant
-	static int kd = 200; // reg constant
+	static int kd = 240; // reg constant
 	
 	static float colorMid;
 	static int colorDiff;
