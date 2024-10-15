@@ -14,6 +14,9 @@ public class follow {
 	static float colorMid;
 	static int colorDiff;
 	
+	static float max = 0;
+	static float min = 1;
+	
 	public static void getInitialValues() { 
 		 System.out.println("Place on black"); 
 		 Button.waitForAnyPress();
@@ -38,13 +41,15 @@ public class follow {
 	
 	public static float getColorError() {
 //		-1 to 1
-//		white > black
 		int lightValue = ls.getNormalizedLightValue();
 		if (lightValue > white) {
 			return 1;
 		} else if (lightValue < black) {
 			return -1;
 		}
+//		white > black
+		
+		float err = (float)(lightValue - colorMid) / (float)(colorDiff/2.0f);
 		return err;
 	}
 	
