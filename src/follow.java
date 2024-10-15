@@ -14,8 +14,6 @@ public class follow {
 	static float colorMid;
 	static int colorDiff;
 	
-	static float max = 0;
-	
 	public static void getInitialValues() { 
 		 System.out.println("Place on black"); 
 		 Button.waitForAnyPress();
@@ -34,36 +32,20 @@ public class follow {
 		 
 		 Motor.A.rotate(-150, true); // 90 deg robot rotation
 		 Motor.B.rotate(150);
-		 
-//		 colorMid = (white - black )/2;
 		 colorMid = (float)(white + black)/2.0f;
 		 colorDiff = white - black;
-		 
-//		 Button.waitForAnyPress();
 	}
 	
 	public static float getColorError() {
 //		-1 to 1
-		int lightValue = ls.getNormalizedLightValue();
 //		white > black
-		
-//		lightValue -= colorMid;
-		float err = (float)(lightValue - colorMid) / (float)(colorDiff/2.0f);
-		System.out.println("err " + String.valueOf(err));
-		if (err > max) {
-			max = err;
+		int lightValue = ls.getNormalizedLightValue();
+		if (lightValue > white) {
+			return 1;
+		} else if (lightValue < black) {
+			return -1;
 		}
-
 		return err;
-		
-//		float height = (float)black * 2 / (float) colorDiff;
-//		float offset = - height - 1;
-//		float err = (lightValue / colorMid) + offset;
-//		System.out.println("height" + String.valueOf(height));
-//		System.out.println("offset" + String.valueOf(offset));
-//		System.out.println("err" + String.valueOf(err));
-//	
-//		return err;
 	}
 	
 	public static void print(String str) {
@@ -85,9 +67,15 @@ public class follow {
 		 Motor.A.backward();
 		 Motor.B.backward();
 		 
-		 while(true){			 
+		 while(!Button.ENTER.isDown()){			 
 			 regulateSpeed();
-			System.out.println("err" + String.valueOf(max));
 		 }
-	 } 
+		 Motor.A.stop();
+		 Motor.B.stop();
+		 
+		 for (int i = 0; i < 10; i++) {
+			System.out.println(" ");
+		}
+		 Button.waitForAnyPress();
+		 } 
 }
