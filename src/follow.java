@@ -16,9 +16,6 @@ public class follow {
 	static float colorMid;
 	static int colorDiff;
 	
-	static float max = 0;
-	static float min = 1;
-	
 	public static void getInitialValues() { 
 		 System.out.println("Place on black"); 
 		 Button.waitForAnyPress();
