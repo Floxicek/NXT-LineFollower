@@ -1,5 +1,7 @@
 import lejos.nxt.Button;
 import lejos.nxt.Motor;
+import lejos.nxt.MotorPort;
+import lejos.nxt.NXTMotor;
 import lejos.nxt.SensorPort;
 import lejos.util.Delay;
 import lejos.nxt.LightSensor;
@@ -8,8 +10,10 @@ public class follow {
 	static int white;
 	static int black;
 	static LightSensor ls = new LightSensor(SensorPort.S4);
+	static NXTMotor motA = new NXTMotor(MotorPort.A); 
+	static NXTMotor motC = new NXTMotor(MotorPort.C);
 
-	static int baseSpeed = 320;
+	static float baseSpeed = 50f;
 	static float kp = 0.67f; // reg constant
 	static float ki = 0f; // reg constant
 	static float antiWindup = 5/100f;
@@ -23,9 +27,9 @@ public class follow {
 		Button.waitForAnyPress();
 		black = ls.getNormalizedLightValue();
 
-		Motor.B.setSpeed(160);
+		Motor.C.setSpeed(160);
 
-		Motor.B.rotate(-200);
+		Motor.C.rotate(-200);
 //		Motor.B.rotate(-150);
 
 		white = ls.getNormalizedLightValue();
@@ -33,8 +37,10 @@ public class follow {
 		System.out.println(black);
 		System.out.println(white);
 
-		Motor.B.rotate(200); // 90 deg robot rotation
+		Motor.C.rotate(200); // 90 deg robot rotation
 //		Motor.B.rotate(150);
+		
+		Motor.C.suspendRegulation();
 		colorMid = (float) (white + black) / 2.0f;
 		colorDiff = Math.abs(white - black);
 //		 Button.waitForAnyPress();
@@ -91,14 +97,18 @@ public class follow {
 	static boolean bForward = true;
 
 	public static void setSpeed(float left, float right) {
-		Motor.A.setSpeed(Math.max(right, 1));
-		Motor.B.setSpeed(Math.max(left, 1));
+//		Motor.A.setSpeed(Math.max(right, 1));
+		motA.setPower((int) right);
+		motC.setPower((int) left);
+//		Motor.B.setSpeed(Math.max(left, 1));
 	}
 
 	public static void main(String[] args) {
 		getInitialValues();
-		Motor.A.backward();
-		Motor.B.backward();
+//		Motor.A.backward();
+		motA.backward();
+		motC.backward();
+//		Motor.B.backward();
 
 		while (!Button.ENTER.isDown()) {
 //		 	MAIN LOOP
