@@ -13,11 +13,11 @@ public class follow {
 	static NXTMotor motA = new NXTMotor(MotorPort.A); 
 	static NXTMotor motC = new NXTMotor(MotorPort.C);
 
-	static float baseSpeed = 50f;
+	static float baseSpeed = 90f;
 	static float kp = 0.67f; // reg constant
 	static float ki = 0f; // reg constant
 	static float antiWindup = 5/100f;
-	static float kd = 0.1f; // reg constant
+	static float kd = 0.07f; // reg constant
 
 	static float colorMid;
 	static int colorDiff;
@@ -86,20 +86,38 @@ public class follow {
 		float d = (float)(error - previousErr)/delta;
 		previousErr = error;
 
-		float correction = p * kp + i * ki + d * kd;
-		setSpeed(baseSpeed + baseSpeed * correction, baseSpeed - baseSpeed * correction);
+		float correction = (p * kp + i * ki + d * kd)/(kp+ki+kd);
+		setSpeed(correction);
 //		System.out.println(error);
 		//System.out.printf("E %.2f I %.2f\n", error, i);
-		System.out.println(d);
+//		System.out.println(d);
 		
 	}
 	static boolean aForward = true;
 	static boolean bForward = true;
 
-	public static void setSpeed(float left, float right) {
+	public static void setSpeed(float correction) {
 //		Motor.A.setSpeed(Math.max(right, 1));
-		motA.setPower((int) right);
-		motC.setPower((int) left);
+		float l = 0;
+		float r = 0;
+		
+		if (Math.abs(baseSpeed + baseSpeed * correction) > 100) {
+			r = (baseSpeed - baseSpeed * correction)*0.5f;
+			l = (baseSpeed + baseSpeed * correction)*0.5f;
+			System.out.println("r " + String.valueOf(r));
+		}
+		else {		
+			r = baseSpeed - baseSpeed * correction;
+			l = baseSpeed + baseSpeed * correction;
+		}	
+		
+		int left = (int) Math.max(Math.min(l, 100),0);
+		int right =(int) Math.max(Math.min(r, 100),0);
+//		System.out.println(String.valueOf(left) + " " + String.valueOf(right));
+		
+		
+		motA.setPower(left);
+		motC.setPower(right);
 //		Motor.B.setSpeed(Math.max(left, 1));
 	}
 
