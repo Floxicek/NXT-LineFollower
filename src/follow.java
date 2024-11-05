@@ -17,7 +17,7 @@ public class follow {
 	static float kp = 0.67f; // reg constant
 	static float ki = 0f; // reg constant
 	static float antiWindup = 5/100f;
-	static float kd = 0.07f; // reg constant
+	static float kd = 0.07f; //.07 reg constant
 
 	static float colorMid;
 	static int colorDiff;
@@ -101,9 +101,11 @@ public class follow {
 		float l = 0;
 		float r = 0;
 		
+		
+		
 		if (Math.abs(baseSpeed + baseSpeed * correction) > 100) {
-			r = (baseSpeed - baseSpeed * correction)*0.5f;
-			l = (baseSpeed + baseSpeed * correction)*0.5f;
+			r = (baseSpeed - baseSpeed * correction)/(Math.abs(baseSpeed + baseSpeed * correction)/100f);
+			l = (baseSpeed + baseSpeed * correction)/(Math.abs(baseSpeed + baseSpeed * correction)/100f);
 			System.out.println("r " + String.valueOf(r));
 		}
 		else {		
